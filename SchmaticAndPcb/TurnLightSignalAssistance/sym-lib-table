@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name "MyRelay")(type "KiCad")(uri "D:/Work_Place/CompanyProject/TurnSignLightAssistance/SchmaticAndPcb/ComponentLibs/MyOwnLibs/MyRelay.kicad_sym")(options "")(descr ""))
+  (lib (name "New_Library")(type "KiCad")(uri "D:/Work_Place/CompanyProject/TurnSignLightAssistance/SchmaticAndPcb/ComponentLibs/MyOwnLibs/New_Library.kicad_sym")(options "")(descr ""))
+)

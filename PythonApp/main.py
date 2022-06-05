@@ -45,8 +45,7 @@ positionRight = int(ConfWindw.winfo_screenwidth()/2 - 300/2)
 positionDown = int(ConfWindw.winfo_screenheight()/2 - 150/2)
 ConfWindw.geometry("+{}+{}".format(positionRight, positionDown))
 
-Port_label = Label(text="Port:", font=("", 12),
-                   justify="right", bg="#2E2D40", fg="#FFFFFF")
+Port_label = Label(text="Port:", font=("", 12), justify="right", bg="#2E2D40", fg="#FFFFFF")
 Port_label.place(x=50, y=30, anchor="center")
 Port_entry = Entry(width=20, bg="#37364D", fg="#FFFFFF", justify="center")
 Port_entry.insert(INSERT, myport.Name)
@@ -59,8 +58,7 @@ Baud_entry = Entry(width=20, bg="#37364D", fg="#FFFFFF", justify="center")
 Baud_entry.insert(INSERT, str(myport.Speed))
 Baud_entry.place(x=180, y=80, anchor="center")
 
-ok_button = Button(text="Ok", width=8, command=RunAppliction,
-                   bg="#135EF2", fg="#FFFFFF")
+ok_button = Button(text="Ok", width=8, command=RunAppliction, bg="#135EF2", fg="#FFFFFF")
 ok_button.place(x=150, y=120, anchor="center")
 
 
@@ -137,10 +135,8 @@ def ReadData():
             Y = [serial_input[8], serial_input[7], serial_input[6], serial_input[5]]
             Ay = int.from_bytes(Y, byteorder='big', signed=True)
 
-            # myimu.Roll = Ax/16384.0*90
-            # myimu.Pitch = Ay/16384.0*90
-            myimu.Roll = Ax
-            myimu.Pitch = Ay
+            myimu.Roll = Ay
+            myimu.Pitch = Ax
 
 
 def main():

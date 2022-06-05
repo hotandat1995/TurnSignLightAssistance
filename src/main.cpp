@@ -61,6 +61,9 @@ static struct {
         float angleY;
         float angleZ;
     } gyroscope;
+
+    float roll;
+    float pitch;
 } self;
 
 /***********************************************************************************************************************
@@ -70,6 +73,7 @@ static struct {
 void displayTestText(void);
 void updateInternalData(void);
 void sendDataToPc(void);
+void updateRollPitch(float RawAccX, float RawAccY, float RawAccZ);
 
 /***********************************************************************************************************************
  **                                                FUNCTION DEFINITIONS                                               **
@@ -79,16 +83,13 @@ void setup()
 {
     Serial.begin(112500);
 
-    // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
     if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
     {
         Serial.println(F("SSD1306 allocation failed"));
-        for (;;){}; // Don't proceed, loop forever
+        for (;;){};
     }
 
     display.display();
-
-    displayTestText();
 
     Wire.begin();
     mpu6050.begin();
@@ -108,55 +109,40 @@ void loop()
     }
 }
 
-float roll,pitch,rollF,pitchF=0;
+/**********************************************************************************************************************/
 
+/**
+ ***********************************************************************************************************************
+ * \brief Send the Pitch and Roll to PC to visualize data from MPU6050
+ **********************************************************************************************************************/
 void sendDataToPc(void)
 {
-    float X_out, Y_out, Z_out;
-
-    X_out = mpu6050.getRawAccX();
-    Y_out = mpu6050.getRawAccY();
-    Z_out = mpu6050.getRawAccZ();
-
-    // Calculate Roll and Pitch (rotation around X-axis, rotation around Y-axis)
-    roll = atan(Y_out / sqrt(pow(X_out, 2) + pow(Z_out, 2))) * 180 / PI;
-    pitch = atan(-1 * X_out / sqrt(pow(Y_out, 2) + pow(Z_out, 2))) * 180 / PI;
-
-    // Low-pass filter
-    rollF = 0.94 * rollF + 0.06 * roll;
-    pitchF = 0.94 * pitchF + 0.06 * pitch;
-
     union
     {
         int32_t data;
         byte bytes[4];
     } block;
 
-    byte bytes[11];
+    byte dataFrame[11];
 
-    bytes[0] = 0x24;
+    dataFrame[0] = 0x24;
 
-    block.data = rollF;
-    bytes[1] = block.bytes[0];
-    bytes[2] = block.bytes[1];
-    bytes[3] = block.bytes[2];
-    bytes[4] = block.bytes[3];
+    block.data = self.roll;
+    dataFrame[1] = block.bytes[0];
+    dataFrame[2] = block.bytes[1];
+    dataFrame[3] = block.bytes[2];
+    dataFrame[4] = block.bytes[3];
 
-    block.data = pitchF;
-    bytes[5] = block.bytes[0];
-    bytes[6] = block.bytes[1];
-    bytes[7] = block.bytes[2];
-    bytes[8] = block.bytes[3];
+    block.data = self.pitch;
+    dataFrame[5] = block.bytes[0];
+    dataFrame[6] = block.bytes[1];
+    dataFrame[7] = block.bytes[2];
+    dataFrame[8] = block.bytes[3];
 
-    bytes[9] = '\r';
-    bytes[10] = '\n';
+    dataFrame[9] = '\r';
+    dataFrame[10] = '\n';
 
-    for (int index = 0; index < 11; index++)
-    {
-       Serial.write(bytes[index]);
-    }
-
-    // Serial.write((uint8_t *)&frame.bytes[0], sizeof(frame));
+    Serial.write(dataFrame, sizeof(dataFrame));
 }
 
 /**
@@ -209,4 +195,28 @@ void updateInternalData(void)
     self.x = mpu6050.getAngleX();
     self.y = mpu6050.getAngleY();
     self.z = mpu6050.getAngleZ();
+
+    updateRollPitch((float)mpu6050.getRawAccX(), (float)mpu6050.getRawAccY(), (float)mpu6050.getRawAccZ());
+}
+
+/**
+ ***********************************************************************************************************************
+ * \brief Update the Roll value and Pitch value after get X,Y,Z value form MPU6050
+ *
+ * \param [in] RawAccX - Converted from raw 16-bit accelerometers X axis to float
+ * \param [in] RawAccY - Converted from raw 16-bit accelerometers Y axis to float
+ * \param [in] RawAccZ - Converted from raw 16-bit accelerometers Z axis to float
+ **********************************************************************************************************************/
+void updateRollPitch(float RawAccX, float RawAccY, float RawAccZ)
+{
+    float rawRoll;
+    float rawPitch;
+
+    // Calculate Roll and Pitch (rotation around X-axis, rotation around Y-axis)
+    rawRoll = atan(RawAccY / sqrt(pow(RawAccX, 2) + pow(RawAccZ, 2))) * 180 / PI;
+    rawPitch = atan(-1 * RawAccX / sqrt(pow(RawAccY, 2) + pow(RawAccZ, 2))) * 180 / PI;
+
+    // Low-pass filter
+    self.roll = 0.94 * self.roll + 0.06 * rawRoll;
+    self.pitch = 0.94 * self.pitch + 0.06 * rawPitch;
 }
