@@ -13,7 +13,7 @@ ApplicationGL = False
 
 
 class PortSettings:
-    Name = "COM13"
+    Name = "COM7"
     Speed = 115200
     Timeout = 2
 
