@@ -16,4 +16,7 @@
 
 #define MONITOR_DATA_TO_PC (false)
 
+#define RIGHT_SIGNAL_PIN (7)
+#define LEFT_SIGNAL_PIN (8)
+
 #endif

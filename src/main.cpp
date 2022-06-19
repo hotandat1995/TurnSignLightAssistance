@@ -19,6 +19,7 @@
 #include <Arduino.h>
 #include <MPU6050_tockn.h>
 #include <Adafruit_SSD1306.h>
+#include "Configure/Cfg.h"
 
 /***********************************************************************************************************************
  **                                                   DEFINES/MACROS                                                  **
@@ -94,6 +95,8 @@ void setup()
     Wire.begin();
     mpu6050.begin();
     mpu6050.calcGyroOffsets(true);
+
+    pinMode(RIGHT_SIGNAL_PIN, INPUT);
 }
 
 void loop()
@@ -103,7 +106,15 @@ void loop()
 
     if (millis() - timer > 30)
     {
-        sendDataToPc();
+        // sendDataToPc();
+        if (digitalRead(RIGHT_SIGNAL_PIN))
+        {
+            Serial.println(F("TRUE"));
+        }
+        else
+        {
+            Serial.println(F("FALSE"));
+        }
         displayTestText();
         timer = millis();
     }
