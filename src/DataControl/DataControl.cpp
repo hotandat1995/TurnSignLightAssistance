@@ -1,7 +1,7 @@
 /**
  * {
- * \file       main.cpp
- * \brief      Main functionality of board
+ * \file       DataControl.cpp
+ * \brief      The controller for data come form peripheral
  * \copyright  (C) 2022 Cerberus team
  *             The reproduction, distribution and utilization of this file as
  *             well as the communication of its contents to others without express
