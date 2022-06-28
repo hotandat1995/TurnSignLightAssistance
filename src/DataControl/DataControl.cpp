@@ -35,19 +35,14 @@
  **                                                 INTERNAL VARIABLES                                                **
  **********************************************************************************************************************/
 
-MPU6050 mpu6050(Wire);
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
 /***********************************************************************************************************************
  **                                                FUNCTION DEFINITIONS                                               **
  **********************************************************************************************************************/
 
-DataControl::DataControl(MPU6050 &mpu, Adafruit_SSD1306 &display)
+void DataControl::InitMpuAndDisplay(MPU6050 &mpu, Adafruit_SSD1306 &display)
 {
     this->mpu6050 = &mpu;
     this->display = &display;
-
-    this->InitPeripheral();
 }
 
 /**
@@ -56,6 +51,10 @@ DataControl::DataControl(MPU6050 &mpu, Adafruit_SSD1306 &display)
  **********************************************************************************************************************/
 void DataControl::InitPeripheral()
 {
+    MPU6050 mpu6050(Wire);
+    Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+    this->InitMpuAndDisplay(mpu6050, display);
     Serial.begin(112500);
 
     if (!this->display->begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))

@@ -29,6 +29,7 @@
 
 long timer = 0;
 
+DataControl dataController;
 /***********************************************************************************************************************
  **                                           INTERNAL FUNCTION DECLARATIONS                                          **
  **********************************************************************************************************************/
@@ -39,14 +40,14 @@ long timer = 0;
 
 void setup()
 {
-
+    dataController.InitPeripheral();
 }
 
 void loop()
 {
     if (millis() - timer > 30)
     {
-        
+        dataController.UpdateAndProcessData();
         timer = millis();
     }
 }

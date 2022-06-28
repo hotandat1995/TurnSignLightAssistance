@@ -5,11 +5,12 @@
 
 class DataControl {
 public:
-    DataControl(MPU6050 &mpu, Adafruit_SSD1306 &display);
+    DataControl(){};
     void UpdateAndProcessData();
+    void InitPeripheral();
 
 private:
-    void InitPeripheral();
+    void InitMpuAndDisplay(MPU6050 &mpu, Adafruit_SSD1306 &display);
     void UpdateRollPitch();
     void SendDataToPc();
     void DisplayText();
