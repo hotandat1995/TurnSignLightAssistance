@@ -16,7 +16,9 @@
 
 #define MONITOR_DATA_TO_PC (false)
 
-#define RIGHT_SIGNAL_PIN (7)
-#define LEFT_SIGNAL_PIN (8)
+#define ALIVE_LED_PIN (12)
+#define SIGNAL_RIGHT_PIN (13)
+#define SIGNAL_LEFT_PIN (14)
+#define LIGHT_CONTROL_PIN (15)
 
 #endif

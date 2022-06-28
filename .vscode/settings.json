@@ -4,5 +4,17 @@
         "millis",
         "OLED",
         "SWITCHCAPVCC"
-    ]
+    ],
+    "files.associations": {
+        "adafruit_ssd1306.h": "c",
+        "wire.h": "c"
+    },
+    "[cpp]": {
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
+        "editor.rulers": [
+            120
+        ]
+    },
 }
