@@ -14,11 +14,14 @@
 #ifndef __CFG_H__
 #define __CFG_H__
 
-#define MONITOR_DATA_TO_PC (false)
+#define MONITOR_DATA_TO_PC
 
-#define ALIVE_LED_PIN (12)
-#define SIGNAL_RIGHT_PIN (13)
-#define SIGNAL_LEFT_PIN (14)
-#define LIGHT_CONTROL_PIN (15)
+#define DELAY_TIME (100)
+#define BACK_TO_NORMAL_TIME (3000)
+
+#define ALIVE_LED_PIN (9)
+#define SIGNAL_RIGHT_PIN (10)
+#define SIGNAL_LEFT_PIN (11)
+#define LIGHT_CONTROL_PIN (12)
 
 #endif

@@ -26,7 +26,8 @@ public:
     void InitPeripheral();
 
 private:
-    void InitMpuAndDisplay(MPU6050 &mpu, Adafruit_SSD1306 &display);
+    void InitMpu();
+    void InitDisplay();
     void UpdateRollPitch();
     void SendDataToPc();
     void DisplayText();
@@ -36,4 +37,5 @@ private:
     Adafruit_SSD1306 *display;
 };
 
+extern DataControl dataController;
 #endif

@@ -14,6 +14,7 @@
 #ifndef __MAIN_STATE__
 #define __MAIN_STATE__
 
-
+void StateMachine_Initialize();
+void StateMachine_RunOneStep();
 
 #endif

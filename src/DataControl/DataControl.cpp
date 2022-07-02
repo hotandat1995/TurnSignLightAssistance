@@ -32,6 +32,12 @@
 #define SCREEN_ADDRESS 0x3C     ///< See data sheet for Address; 0x3D for 128x64, 0x3C for 128x32
 
 /***********************************************************************************************************************
+ **                                                 EXTERNAL VARIABLES                                                **
+ **********************************************************************************************************************/
+
+DataControl dataController;
+
+/***********************************************************************************************************************
  **                                                 INTERNAL VARIABLES                                                **
  **********************************************************************************************************************/
 
@@ -39,11 +45,17 @@
  **                                                FUNCTION DEFINITIONS                                               **
  **********************************************************************************************************************/
 
-void DataControl::InitMpuAndDisplay(MPU6050 &mpu, Adafruit_SSD1306 &display)
+void DataControl::InitMpu()
 {
-    this->mpu6050 = &mpu;
-    this->display = &display;
+    this->mpu6050 = new MPU6050(Wire);
 }
+
+#ifdef USE_DISPLAY
+void DataControl::InitDisplay()
+{
+    this->display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+}
+#endif
 
 /**
  ***********************************************************************************************************************
@@ -51,19 +63,18 @@ void DataControl::InitMpuAndDisplay(MPU6050 &mpu, Adafruit_SSD1306 &display)
  **********************************************************************************************************************/
 void DataControl::InitPeripheral()
 {
-    MPU6050 mpu6050(Wire);
-    Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
-    this->InitMpuAndDisplay(mpu6050, display);
+    this->InitMpu();
     Serial.begin(112500);
 
+#ifdef USE_DISPLAY
+    this->InitDisplay();
     if (!this->display->begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
     {
         Serial.println(F("SSD1306 allocation failed"));
         for (;;){};
     }
-
     this->display->display();
+#endif
 
     Wire.begin();
     this->mpu6050->begin();
@@ -73,6 +84,7 @@ void DataControl::InitPeripheral()
     pinMode(SIGNAL_LEFT_PIN, INPUT);
     pinMode(ALIVE_LED_PIN, OUTPUT);
     pinMode(LIGHT_CONTROL_PIN, OUTPUT);
+    digitalWrite(LIGHT_CONTROL_PIN, LOW);
 }
 
 /**
@@ -117,9 +129,12 @@ void DataControl::UpdateAndProcessData()
 {
     this->mpu6050->update();
     this->UpdateRollPitch();
+#ifdef USE_DISPLAY
     this->DisplayText();
+#endif
 }
 
+#ifdef USE_DISPLAY
 /**
  ***********************************************************************************************************************
  * \brief Display the data get from MPU6050 to the SSD1306
@@ -139,6 +154,7 @@ void DataControl::DisplayText(void)
 
     this->display->display();
 }
+#endif
 
 /**
  ***********************************************************************************************************************

@@ -15,9 +15,10 @@
  **                                                      INCLUDES                                                     **
  **********************************************************************************************************************/
 
-#include "Configure/Cfg.h"
 #include <Arduino.h>
+#include "Configure/Cfg.h"
 #include "DataControl/DataControl.h"
+#include "StateMachine/MainState.h"
 
 /***********************************************************************************************************************
  **                                                   DEFINES/MACROS                                                  **
@@ -29,7 +30,8 @@
 
 long timer = 0;
 
-DataControl dataController;
+extern DataControl dataController;
+
 /***********************************************************************************************************************
  **                                           INTERNAL FUNCTION DECLARATIONS                                          **
  **********************************************************************************************************************/
@@ -41,17 +43,17 @@ DataControl dataController;
 void setup()
 {
     dataController.InitPeripheral();
+    StateMachine_Initialize();
 }
 
 void loop()
 {
-    if (millis() - timer > 30)
+    if (millis() - timer > DELAY_TIME)
     {
-        dataController.UpdateAndProcessData();
+        // dataController.UpdateAndProcessData();
+        StateMachine_RunOneStep();
         timer = millis();
     }
 }
 
 /**********************************************************************************************************************/
-
-
