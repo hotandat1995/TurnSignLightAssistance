@@ -181,3 +181,12 @@ void DataControl::UpdateRollPitch()
     this->pitch = 0.94 * this->pitch + 0.06 * rawPitch;
 }
 
+float DataControl::GetRoll()
+{
+    return this->roll;
+}
+
+float DataControl::GetPitch()
+{
+    return this->pitch;
+}

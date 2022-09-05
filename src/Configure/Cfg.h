@@ -14,14 +14,19 @@
 #ifndef __CFG_H__
 #define __CFG_H__
 
+/* Feature switch */
 #define MONITOR_DATA_TO_PC
 
-#define DELAY_TIME (100)
-#define BACK_TO_NORMAL_TIME (3000)
+/* Configure for feature */
+#define DELAY_TIME              (100)
+#define BACK_TO_NORMAL_TIME     (5000)
+#define ALIVE_LED_TIME          (500)
+#define TURN_ANGLE              (20)
 
-#define ALIVE_LED_PIN (9)
-#define SIGNAL_RIGHT_PIN (10)
-#define SIGNAL_LEFT_PIN (11)
-#define LIGHT_CONTROL_PIN (12)
+/* Hardware pin */
+#define ALIVE_LED_PIN           (9)
+#define SIGNAL_RIGHT_PIN        (10)
+#define SIGNAL_LEFT_PIN         (11)
+#define LIGHT_CONTROL_PIN       (12)
 
 #endif

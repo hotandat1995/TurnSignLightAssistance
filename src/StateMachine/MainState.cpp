@@ -71,18 +71,18 @@ void StateMachine_Initialize()
 {
     S_Init->addTransition(&IsInitDone, S_NormalOff);
 
-    S_NormalOff->addTransition(&IsTurnLeftSignal, S_BlinkLeft);
+    S_NormalOff->addTransition(&IsTurnLeftSignal , S_BlinkLeft);
     S_NormalOff->addTransition(&IsTurnRightSignal, S_BlinkRight);
 
     S_BlinkLeft->addTransition(&IsTurnRightSignal, S_NormalOff);
-    S_BlinkLeft->addTransition(&IsBackToNormal, S_TemporaryOff);
+    S_BlinkLeft->addTransition(&IsBackToNormal   , S_TemporaryOff);
 
     S_BlinkRight->addTransition(&IsTurnLeftSignal, S_NormalOff);
-    S_BlinkRight->addTransition(&IsBackToNormal, S_TemporaryOff);
+    S_BlinkRight->addTransition(&IsBackToNormal  , S_TemporaryOff);
 
     S_TemporaryOff->addTransition(&IsOutBoundOfRightAngle, S_BlinkRight);
-    S_TemporaryOff->addTransition(&IsOutBoundOfLeftAngle, S_BlinkLeft);
-    S_TemporaryOff->addTransition(&IsSwitchChangeState, S_NormalOff);
+    S_TemporaryOff->addTransition(&IsOutBoundOfLeftAngle , S_BlinkLeft);
+    S_TemporaryOff->addTransition(&IsSwitchChangeState   , S_NormalOff);
 }
 
 void StateMachine_RunOneStep()
@@ -146,12 +146,28 @@ bool IsTurnRightSignal()
 
 bool IsOutBoundOfRightAngle()
 {
-    return false;
+    if (dataController.GetPitch() > TURN_ANGLE)
+    {
+        lastCheck = millis();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool IsOutBoundOfLeftAngle()
 {
-    return false;
+    if (dataController.GetPitch() < -(TURN_ANGLE))
+    {
+        lastCheck = millis();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool IsSwitchChangeState()
@@ -180,6 +196,15 @@ bool IsBackToNormal()
 /**********************************************************************************************************************/
 /* State */
 
+static void PrintOut_RollPitch()
+{
+    Serial.print(" - [");
+    Serial.print(dataController.GetRoll());
+    Serial.print("] - [");
+    Serial.print(dataController.GetPitch());
+    Serial.println("]");
+}
+
 static void state_Init(void)
 {
     Serial.println("Init state!");
@@ -188,24 +213,30 @@ static void state_Init(void)
 
 static void state_NormalOff(void)
 {
-    Serial.println("NormalOff state!");
+    Serial.print("NormalOff state!");
+    PrintOut_RollPitch();
     digitalWrite(LIGHT_CONTROL_PIN, LOW);
 }
 
 static void state_BlinkLeft(void)
 {
-    Serial.println("Blinking Left state!");
+    Serial.print("Blinking Left state!");
+    PrintOut_RollPitch();
     digitalWrite(LIGHT_CONTROL_PIN, HIGH);
 }
 
 static void state_BlinkRight(void)
 {
-    Serial.println("Blinking Right state!");
+    Serial.print("Blinking Right state!");
+    PrintOut_RollPitch();
     digitalWrite(LIGHT_CONTROL_PIN, HIGH);
 }
 
 static void state_TemporaryOff(void)
 {
-    Serial.println("TemporaryOff state!");
+    Serial.print("TemporaryOff state!");
+    PrintOut_RollPitch();
     digitalWrite(LIGHT_CONTROL_PIN, LOW);
 }
+
+/**********************************************************************************************************************/

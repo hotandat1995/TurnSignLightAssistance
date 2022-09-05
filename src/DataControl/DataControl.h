@@ -24,6 +24,8 @@ public:
     DataControl(){};
     void UpdateAndProcessData();
     void InitPeripheral();
+    float GetRoll();
+    float GetPitch();
 
 private:
     void InitMpu();
