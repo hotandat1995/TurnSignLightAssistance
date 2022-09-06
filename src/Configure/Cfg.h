@@ -19,7 +19,7 @@
 
 /* Configure for feature */
 #define DELAY_TIME              (100)
-#define BACK_TO_NORMAL_TIME     (5000)
+#define BACK_TO_NORMAL_TIME     (3000)
 #define ALIVE_LED_TIME          (500)
 #define TURN_ANGLE              (20)
 

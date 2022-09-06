@@ -14,6 +14,13 @@
 #ifndef __MAIN_STATE__
 #define __MAIN_STATE__
 
+enum {
+    E_NormalOff,
+    E_TurnRight,
+    E_TurnLeft,
+    E_TemporaryOff
+};
+
 void StateMachine_Initialize();
 void StateMachine_RunOneStep();
 

@@ -62,6 +62,7 @@ State* S_BlinkRight = machine.addState(&state_BlinkRight);
 State* S_TemporaryOff = machine.addState(&state_TemporaryOff);
 
 static long lastCheck;
+static int lastState;
 
 /***********************************************************************************************************************
  **                                                FUNCTION DEFINITIONS                                               **
@@ -122,6 +123,7 @@ bool IsTurnLeftSignal()
 {
     if (LOW == digitalRead(SIGNAL_LEFT_PIN))
     {
+        Serial.println("Turn left");
         lastCheck = millis();
         return true;
     }
@@ -135,6 +137,7 @@ bool IsTurnRightSignal()
 {
     if (LOW == digitalRead(SIGNAL_RIGHT_PIN))
     {
+        Serial.println("Turn right");
         lastCheck = millis();
         return true;
     }
@@ -146,7 +149,7 @@ bool IsTurnRightSignal()
 
 bool IsOutBoundOfRightAngle()
 {
-    if (dataController.GetPitch() > TURN_ANGLE)
+    if (dataController.GetPitch() > (float)TURN_ANGLE && lastState == E_TurnRight)
     {
         lastCheck = millis();
         return true;
@@ -155,11 +158,12 @@ bool IsOutBoundOfRightAngle()
     {
         return false;
     }
+    return false;
 }
 
 bool IsOutBoundOfLeftAngle()
 {
-    if (dataController.GetPitch() < -(TURN_ANGLE))
+    if (dataController.GetPitch() < -(float)(TURN_ANGLE) && lastState == E_TurnLeft)
     {
         lastCheck = millis();
         return true;
@@ -168,12 +172,35 @@ bool IsOutBoundOfLeftAngle()
     {
         return false;
     }
+    return false;
 }
 
 bool IsSwitchChangeState()
 {
-    if ((false == IsTurnRightSignal()) && (false == IsTurnLeftSignal()))
+    static int counter;
+
+    bool left = IsTurnLeftSignal();
+    bool right = IsTurnRightSignal();
+
+    if (counter < 50)
     {
+        counter++;
+        return false;
+    }
+
+    if (lastState == E_TurnRight && right == false)
+    {
+        counter = 0;
+        return true;
+    }
+    else if (lastState == E_TurnLeft && left == false)
+    {
+        counter = 0;
+        return true;
+    }
+    else if (left == false && right == false)
+    {
+        counter = 0;
         return true;
     }
     else
@@ -216,6 +243,7 @@ static void state_NormalOff(void)
     Serial.print("NormalOff state!");
     PrintOut_RollPitch();
     digitalWrite(LIGHT_CONTROL_PIN, LOW);
+    lastState = E_NormalOff;
 }
 
 static void state_BlinkLeft(void)
@@ -223,6 +251,7 @@ static void state_BlinkLeft(void)
     Serial.print("Blinking Left state!");
     PrintOut_RollPitch();
     digitalWrite(LIGHT_CONTROL_PIN, HIGH);
+    lastState = E_TurnLeft;
 }
 
 static void state_BlinkRight(void)
@@ -230,6 +259,7 @@ static void state_BlinkRight(void)
     Serial.print("Blinking Right state!");
     PrintOut_RollPitch();
     digitalWrite(LIGHT_CONTROL_PIN, HIGH);
+    lastState = E_TurnRight;
 }
 
 static void state_TemporaryOff(void)
@@ -237,6 +267,7 @@ static void state_TemporaryOff(void)
     Serial.print("TemporaryOff state!");
     PrintOut_RollPitch();
     digitalWrite(LIGHT_CONTROL_PIN, LOW);
+    // lastState = E_TemporaryOff;
 }
 
 /**********************************************************************************************************************/
